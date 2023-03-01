@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Sample User API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /users:
+    summary: Users
+    get:
+      operationId: get_users
+      responses:
+        "200":
+          description: Get users
+          content:
+            "application/json":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /users/{name}:
+    summary: User
+    parameters:
+      - name: name
+        in: path
+        description: user name
+        required: true
+        example: "Sasaki"
+        schema:
+          $ref: "#/components/schemas/name"
+    get:
+      operationId: get_user
+      responses:
+        "200":
+          description: Get user
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/User"
+    post:
+      operationId: post_user
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad Request
+          content:
+            "application/problem+json":
+              schema:
+                $ref: "#/components/schemas/RequestError"
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - grade
+        - clubs
+      properties:
+        name:
+          $ref: "#/components/schemas/name"
+        grade:
+          $ref: "#/components/schemas/grade"
+        clubs:
+          type: array
+          items:
+            $ref: "#/components/schemas/club"
+    name:
+      type: string
+      format: name
+      example: "Sasaki"
+    grade:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 3
+      example: 1
+    club:
+      type: string
+      format: name
+      example: "Football"
+    RequestError:
+      type: object
+      properties:
+        detail:
+          type: string
+        status:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
