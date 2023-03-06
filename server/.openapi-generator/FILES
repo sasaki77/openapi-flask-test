@@ -7,6 +7,7 @@ git_push.sh
 openapi_server/__init__.py
 openapi_server/__init__.py
 openapi_server/__main__.py
+openapi_server/config.py
 openapi_server/controllers/__init__.py
 openapi_server/controllers/default_controller.py
 openapi_server/controllers/security_controller_.py
