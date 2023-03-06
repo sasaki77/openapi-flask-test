@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: Sample User API
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/api
+- url: http://localhost:8080
+paths:
+  /users:
+    get:
+      operationId: get_users
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: Get users
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    summary: Users
+  /users/{name}:
+    get:
+      operationId: get_user
+      parameters:
+      - description: user name
+        example: Sasaki
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          $ref: '#/components/schemas/name'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Get user
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      operationId: post_user
+      parameters:
+      - description: user name
+        example: Sasaki
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          $ref: '#/components/schemas/name'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Success
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+          description: Bad Request
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    summary: User
+components:
+  schemas:
+    User:
+      example:
+        grade: 1
+        name: Sasaki
+        clubs:
+        - Football
+        - Football
+      properties:
+        name:
+          example: Sasaki
+          format: name
+          title: name
+          type: string
+        grade:
+          example: 1
+          format: int32
+          maximum: 3
+          minimum: 1
+          title: grade
+          type: integer
+        clubs:
+          items:
+            $ref: '#/components/schemas/club'
+          title: clubs
+          type: array
+      required:
+      - clubs
+      - grade
+      - name
+      title: User
+      type: object
+    name:
+      example: Sasaki
+      format: name
+      title: name
+      type: string
+    grade:
+      example: 1
+      format: int32
+      maximum: 3
+      minimum: 1
+      title: grade
+      type: integer
+    club:
+      example: Football
+      format: name
+      title: club
+      type: string
+    RequestError:
+      properties:
+        detail:
+          title: detail
+          type: string
+        status:
+          title: status
+          type: integer
+        title:
+          title: title
+          type: string
+        type:
+          title: type
+          type: string
+      title: RequestError
+      type: object
