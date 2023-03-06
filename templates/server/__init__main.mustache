@@ -1,19 +1,27 @@
 import os
 
 import connexion
+{{#featureCORS}}
+from flask_cors import CORS
+{{/featureCORS}}
 
-from openapi_server import encoder
-from openapi_server.config import DefaultSettings
+from {{packageName}} import encoder
+from {{packageName}}.config import DefaultSettings
 
 
 def create_app():
     app = connexion.App(__name__, specification_dir='./openapi/')
-    app.app.config.from_object('openapi_server.config.DefaultSettings')
+    app.app.config.from_object('{{packageName}}.config.DefaultSettings')
     if "OPENAPISERVER_SETTINGS" in os.environ:
         app.app.config.from_envvar('OPENAPISERVER_SETTINGS')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('openapi.yaml',
-                arguments={'title': 'Sample User API'},
+                arguments={'title': '{{appName}}'},
                 pythonic_params=True)
 
+{{#featureCORS}}
+    # add CORS support
+    CORS(app.app)
+
+{{/featureCORS}}
     return app, app.app

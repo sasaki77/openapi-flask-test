@@ -1,0 +1,5 @@
+templateDir: templates/server
+files:
+  __init__main.mustache:
+    destinationFilename: openapi_server/__init__.py
+    templateType: SupportingFiles
