@@ -3,6 +3,7 @@ info:
   title: Sample User API
   version: 1.0.0
 servers:
+  - url: http://localhost:8080/api
   - url: http://localhost:8080
 paths:
   /users:
