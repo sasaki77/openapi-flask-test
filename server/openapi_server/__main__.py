@@ -4,7 +4,7 @@ from openapi_server import create_app
 
 
 def main():
-    app, flaskapp = create_app()
+    app = create_app()
     app.run(port=8080)
 
 

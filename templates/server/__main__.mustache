@@ -4,7 +4,7 @@ from {{packageName}} import create_app
 
 
 def main():
-    app, flaskapp = create_app()
+    app = create_app()
     app.run(port={{serverPort}})
 
 
