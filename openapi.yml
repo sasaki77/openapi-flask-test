@@ -78,7 +78,7 @@ components:
     name:
       type: string
       format: name
-      example: "Sasaki"
+      example: "sasaki"
     grade:
       type: integer
       format: int32
