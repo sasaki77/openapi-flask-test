@@ -4,7 +4,9 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy import String
 from sqlalchemy import ForeignKey
-from openapi_server.database.database import db
+from openapi_server.database.database import db, ma
+
+from marshmallow import fields
 
 
 class User(db.Model):
@@ -29,3 +31,24 @@ class Club(db.Model):
 
     def __repr__(self) -> str:
         return f"Address(name={self.name!r}, club={self.club!r})"
+
+
+class UserSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = User
+
+    name = ma.auto_field()
+    grade = ma.auto_field()
+    club = fields.Pluck("ClubSchema", "club", many=True)
+
+
+class ClubSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Club
+
+    name = ma.auto_field()
+    club = ma.auto_field()
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)

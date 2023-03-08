@@ -78,13 +78,13 @@ components:
     User:
       example:
         grade: 1
-        name: Sasaki
+        name: sasaki
         clubs:
         - Football
         - Football
       properties:
         name:
-          example: Sasaki
+          example: sasaki
           format: name
           title: name
           type: string
@@ -107,7 +107,7 @@ components:
       title: User
       type: object
     name:
-      example: Sasaki
+      example: sasaki
       format: name
       title: name
       type: string

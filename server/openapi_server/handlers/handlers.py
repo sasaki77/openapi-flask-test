@@ -1,41 +1,34 @@
 from flask import abort
+from sqlalchemy.orm import contains_eager
 
 from openapi_server.database.database import db
 from openapi_server.database.models import User, Club
-
-from openapi_server.models import User as U
+from openapi_server.database.models import user_schema, users_schema
 
 
 def get_user_handler(name):
-    stmt = db.select(User, Club.club).join(Club).where(User.name == name)
-    result = db.session.execute(stmt)
+    stmt = (
+        db.select(User)
+        .join(User.club)
+        .options(contains_eager(User.club))
+        .where(User.name == name)
+    )
 
-    user = None
-    club = []
-    for i, row in enumerate(result):
-        u, c = row
-        if i == 0:
-            user = u
-        club.append(c)
+    user = db.session.scalars(stmt).unique().first()
 
     if user is None:
         abort(400, description=f"{name} doesn't exist in the database")
 
-    return U(user.name, user.grade, club)
+    return user_schema.dump(user)
 
 
 def get_users_handler():
-    stmt = db.select(User, Club.club).join(Club)
-    result = db.session.execute(stmt)
+    stmt = db.select(User).join(User.club).options(contains_eager(User.club))
+    result = db.session.scalars(stmt).unique()
 
-    users = {}
-    for row in result:
-        user, club = row
-        if user.name not in users:
-            users[user.name] = U(user.name, user.grade, [])
-        users[user.name].clubs.append(club)
+    users = [row for row in result]
 
-    return list(users.values())
+    return users_schema.dump(users)
 
 
 def post_user_handler(name, user):
@@ -54,18 +47,16 @@ def post_user_handler(name, user):
     db.session.add(u)
     db.session.commit()
 
-    stmt = db.select(User, Club.club).join(Club).where(User.name == name)
-    result = db.session.execute(stmt)
+    stmt = (
+        db.select(User)
+        .join(User.club)
+        .where(User.name == name)
+        .options(contains_eager(User.club))
+    )
 
-    user = None
-    club = []
-    for i, row in enumerate(result):
-        u, c = row
-        if i == 0:
-            user = u
-        club.append(c)
+    user = db.session.scalars(stmt).unique().first()
 
     if user is None:
         abort(400, description=f"{name} doesn't exist in the database")
 
-    return U(user.name, user.grade, club), 201
+    return user_schema.dump(user), 201
