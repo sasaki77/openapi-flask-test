@@ -1,7 +1,12 @@
 templateDir: templates/server
 additionalProperties:
   settings:
-    - { "key": SQLALCHEMY_DATABASE_URI, "value": '"sqlite:///project.db"' }
+    base:
+      - { "key": Testing, "value": "False" }
+    development:
+      - { "key": SQLALCHEMY_DATABASE_URI, "value": '"sqlite:///project.db"' }
+    testing:
+      - { "key": SQLALCHEMY_DATABASE_URI, "value": '"sqlite:///test.db"' }
 files:
   __init__main.mustache:
     destinationFilename: openapi_server/__init__.py
