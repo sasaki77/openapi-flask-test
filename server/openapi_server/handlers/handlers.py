@@ -9,7 +9,7 @@ from openapi_server.database.models import user_schema, users_schema
 def get_user_handler(name):
     stmt = (
         db.select(User)
-        .join(User.club)
+        .outerjoin(User.club)
         .options(contains_eager(User.club))
         .where(User.name == name)
     )
@@ -41,15 +41,32 @@ def post_user_handler(name, user):
     u = User(name=name, grade=user.grade)
     c = []
     if user.clubs is not None:
+        cset = set()
         for club in user.clubs:
-            c.append(Club(club=club))
-    u.club = c
-    db.session.add(u)
+            if club in cset:
+                cset.add(club)
+        c = [Club(club=club) for club in cset]
+    u.club = list(c)
+
+    stmt = (
+        db.select(User)
+        .outerjoin(User.club)
+        .where(User.name == name)
+        .options(contains_eager(User.club))
+    )
+
+    user = db.session.scalars(stmt).unique().first()
+
+    if user is None:
+        db.session.add(u)
+    else:
+        db.session.merge(u)
+
     db.session.commit()
 
     stmt = (
         db.select(User)
-        .join(User.club)
+        .outerjoin(User.club)
         .where(User.name == name)
         .options(contains_eager(User.club))
     )
