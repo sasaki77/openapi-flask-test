@@ -7,6 +7,7 @@ additionalProperties:
       - { "key": SQLALCHEMY_DATABASE_URI, "value": '"sqlite:///project.db"' }
     testing:
       - { "key": SQLALCHEMY_DATABASE_URI, "value": '"sqlite:///test.db"' }
+      - { "key": Testing, "value": "True" }
 files:
   __init__main.mustache:
     destinationFilename: openapi_server/__init__.py
