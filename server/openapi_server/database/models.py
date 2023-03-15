@@ -15,7 +15,9 @@ class User(db.Model):
     name: Mapped[str] = mapped_column(String(80), primary_key=True)
     grade: Mapped[int]
 
-    club: Mapped[List["Club"]] = relationship(back_populates="user")
+    club: Mapped[List["Club"]] = relationship(
+        back_populates="user", cascade="save-update, merge, delete, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"User(name={self.name!r}, grade={self.grade!r})"
@@ -39,7 +41,7 @@ class UserSchema(ma.SQLAlchemySchema):
 
     name = ma.auto_field()
     grade = ma.auto_field()
-    club = fields.Pluck("ClubSchema", "club", many=True)
+    club = fields.Pluck("ClubSchema", "club", many=True, data_key="clubs")
 
 
 class ClubSchema(ma.SQLAlchemySchema):
