@@ -17,11 +17,15 @@ def init_db(app):
     migrate.init_app(app, db)
     ma.init_app(app)
 
-    app.cli.add_command(mock_db)
+    app.cli.add_command(mock_db_command)
 
 
 @click.command("mock-db")
 @with_appcontext
+def mock_db_command():
+    mock_db()
+
+
 def mock_db():
     downgrade(revision="base")
     upgrade(revision="head")
