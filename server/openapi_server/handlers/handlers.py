@@ -23,7 +23,7 @@ def get_user_handler(name):
 
 
 def get_users_handler():
-    stmt = db.select(User).join(User.club).options(contains_eager(User.club))
+    stmt = db.select(User).outerjoin(User.club).options(contains_eager(User.club))
     result = db.session.scalars(stmt).unique()
 
     users = [row for row in result]
@@ -43,10 +43,11 @@ def post_user_handler(name, user):
     if user.clubs is not None:
         cset = set()
         for club in user.clubs:
-            if club in cset:
+            if club not in cset:
                 cset.add(club)
         c = [Club(club=club) for club in cset]
     u.club = list(c)
+    print(c)
 
     stmt = (
         db.select(User)
